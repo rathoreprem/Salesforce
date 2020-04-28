@@ -1,0 +1,11 @@
+
+Approvel Process
+
+Step 1: Go to the Home page of setup
+Step 2: Search Approval process in the quick find
+Step 3: Manage approval process for loan
+Step 4: Approval Process ->  Create new approval process-> Use jump start wizard -> 
+Step 5: Give any name and go to the specific Entry criteria
+Step 6: Field (Loan:Amount),  operator (Greater than), Value (15000)
+Step 7: Select Approver -> Automatic assign to approver -> related user -> loan manager -> save- > View approval process detail page
+Step 8: Final approval for action -> Edit -> Unlock the record for editing and save it-> Activate
