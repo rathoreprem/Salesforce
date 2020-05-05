@@ -1,0 +1,35 @@
+SOQL
+				   				   
+SELECT Name, DOB__c, Sex__c FROM student__c WHERE LastName__c LIKE 'S%'
+
+SELECT  Name, LastName__c, class__r.Name FROM student__c WHERE class__r.Name LIKE 'X%'	
+
+SELECT  Name, LastName__c, class__r.Name FROM student__c 
+
+SELECT Name, (SELECT Name FROM students__r) FROM class_c	
+
+SELECT NAME  FROM Student__c WHERE Class__r.CLassTeacher__r.Name Like 'S%'
+
+SELECT Id, Name FROM student__c WHERE CALENDAR_YEAR(DOB__c)>2000
+
+SELECT Id, Name FROM Lead WHERE LastModifiedBy.LastModifiedDate = THIS_MONTH
+		 
+SELECT Name, (SELECT Name FROM students__r WHERE Name LIKE 'S%') FROM class_c  
+
+SELECT teacher_r.Name FROM Teach__c WHERE (subject__c LIKE 'Hindi' or subject__c LIKE 'English')
+
+SELECT Name FROM student__c WHERE (class_c in (select class_c FROM teach__c WHERE (subject__c LIKE 'Hindi' OR subject__c LIKE 'Math')))
+
+SELECT Name,NumberOfStudents__c	 FROM class_c
+
+SELECT CALENDAR_MONTH(DOB__c), COUNT(DOB__c) FROM Student__c GROUP BY CALENDAR_MONTH(DOB__c) ORDER BY COUNT(DOB__c) DESC
+
+
+SOSL
+
+FIND {Prem} IN Name Fields RETURNING Contact(Name),student__c(Name)
+
+FIND {Prem} IN Name Fields RETURNING student__c(Name WHERE Sex__c LIKE 'Male')
+
+
+
