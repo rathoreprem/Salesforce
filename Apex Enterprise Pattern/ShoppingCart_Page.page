@@ -1,0 +1,262 @@
+<apex:page standardController="Purchase_order__c"  recordSetVar="purchaseorders" extensions="ShoppingCart_Controller">
+    <style>
+        #customers {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers tr:nth-child(even){
+            background-color: #f2f2f2;
+        }
+
+        #customers tr:hover {
+            background-color: #ddd;
+        }
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+    </style>
+<!--------------------Product History----------------------->
+        <Apex:form rendered="{!showhistory}" >
+            <apex:pageBlock id="history" title="Purchase Orders History">
+                <table id="customers">
+                    <tr>
+                        <th>
+                            <apex:commandLink value="Order Id" action="{!sortPurchaseOrderAscending}" reRender="history" >
+                                    <apex:param name="purchaseSort" value="Order Id" />
+                            </apex:commandLink>
+                    	</th>
+                    	<th>
+                        	<apex:commandLink value="Order Date" action="{!sort}" reRender="history">
+                        	        <apex:param name="purchaseSort" value="OrderDate__c" />
+                        	</apex:commandLink>
+                        </th>
+                        <th>
+                            <apex:commandLink value="Order Price" action="{!sort}" reRender="history" >
+                                    <apex:param name="purchaseSort" value="Order_Price__c" />
+                            </apex:commandLink>
+                        </th>
+                        <th>
+                            <apex:commandLink value="Order Status" action="{!sortPurchaseOrderAscending}" reRender="history" >
+                                    <apex:param name="purchaseSort" value="Order_Status__c" />
+                            </apex:commandLink>
+                        </th>
+                	</tr>
+                	<apex:repeat value="{!purchaseorders}" var="order" >
+                    	<tr>
+                            <td>{!order.id}</td>
+                        	<td>{!order.OrderDate__c}</td>
+                        	<td>{!order.Order_Price__c}</td>
+                        	<td>{!order.Order_Status__c}</td>    
+                    	</tr>
+                    </apex:repeat>
+                </table>
+            <br/><br/>
+                <table>
+                    <tr>
+                        <td style="float:left">
+                            <apex:commandLink value="First" action="{!First}" styleClass="btn" rendered="{!HasPrevious}">
+                                 <apex:param name="purchaseSort" value="Order_Price__c" />
+                            </apex:commandLink>
+                            <apex:outputText style="color:#ccc;" value="First" styleClass="btn" rendered="{!NOT(HasPrevious)}">
+                            </apex:outputText>
+                            <apex:commandLink value="<< Previous" action="{!previous}" styleClass="btn" rendered="{!HasPrevious}">
+                                 <apex:param name="purchaseSort" value="Order_Price__c" />
+                            </apex:commandLink>
+                            <apex:outputText style="color:#ccc;" value="<< Previous" styleClass="btn" rendered="{!NOT(HasPrevious)}">
+                            </apex:outputText>
+                            <apex:commandLink value="Next >>" action="{!Next}" styleClass="btn"  rendered="{!HasNext}">
+                                 <apex:param name="purchaseSort" value="Order_Price__c" />
+                            </apex:commandLink>
+                            <apex:outputText style="color:#ccc;" value="Next >>" styleClass="btn"  rendered="{!NOT(HasNext)}">
+                            </apex:outputText>
+                            <apex:commandLink value="Last" action="{!Last}" styleClass="btn"  rendered="{!HasNext}">
+                                <apex:param name="purchaseSort" value="Order_Price__c" />
+                            </apex:commandLink>
+                            <apex:outputText style="color:#ccc;" value="Last" styleClass="btn"  rendered="{!NOT(HasNext)}">
+                            </apex:outputText>
+                        </td>
+                        <td>
+                            {!PageNumber+1} - {! CEILING(ResultSize / 10)} of {! CEILING(ResultSize / 10)}
+                        </td>
+                    </tr>
+                </table>         
+                <apex:pageBlockButtons location="Bottom">
+                    <div style="align:center">
+                    <apex:commandButton value="Add New Purchase" action="{!showProductList}"/>   
+                    </div>   
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+        </Apex:form>
+        <br/><br/>
+<!--------------------Product Item----------------------->
+        <apex:form rendered="{!showProducts}" >
+            <apex:pageBlock id="productDetail" title="Products">     
+                <apex:inputText value="{!searchProductName}"  >
+                    <apex:actionSupport event="onkeyup" action="{!searchPrductByName}" />
+            </apex:inputText>
+                <div style="float:right">
+                    <apex:commandButton value="AddCart "  action="{!addTocart}"/>
+                </div>
+                <br/><br/>
+                <table id="customers" >
+                    <tr>    
+                        <th>
+                            <apex:commandLink value="Select Products" action="{!sortOnProduct}" reRender="productDetail" />
+                        </th>
+                        <th>
+                            <apex:commandLink value="Product Name" action="{!sortOnProduct}" reRender="productDetail" >
+                                <apex:param name="productSort" value="name" />
+                            </apex:commandLink>
+                        </th>
+                        <th>
+                            <apex:commandLink value="Product Code" action="{!sortOnProduct}" reRender="productDetail" >
+                                <apex:param name="productSort" value="productcode" />
+                            </apex:commandLink>
+                        </th>
+                        <th>
+                            <apex:commandLink value="Description" action="{!sortOnProduct}" reRender="productDetail" >
+                                <apex:param name="productSort" value="Description" />
+                            </apex:commandLink>
+                        </th>
+                        <th>
+                            <apex:commandLink value="Price Per Unit" action="{!sortOnProduct}" reRender="productDetail" >
+                                <apex:param name="productSort" value="Price_Per_Unit__c" />
+                            </apex:commandLink>
+                        </th> 
+                        <th>
+                            <apex:commandLink value="Quantity" action="{!sortOnProduct}" reRender="productDetail" >
+                                <apex:param name="productSort" value="Quantity_Available__c" />
+                            </apex:commandLink>
+                        </th>
+                    </tr>
+                    <apex:repeat value="{!productList}" var="productOfList" >
+                        <tr>
+                            <td>
+                                <apex:inputCheckbox value="{!productOfList.shouldaddToCart}"  disabled="{!productOfList.product.Quantity_Available__c<=0}" />
+                            </td>
+                            <td>
+                                {!productOfList.product.name}
+                            </td>
+                            <td>
+                                {!productOfList.product.productcode}
+                            </td>
+                            <td>
+                                {!productOfList.product.Description}
+                            </td>
+                            <td>
+                                {!productOfList.product.Price_Per_Unit__c}
+                            </td>
+                            <td>
+                                {!productOfList.product.Quantity_Available__c}
+                            </td>    
+                        </tr>
+                    </apex:repeat>
+                </table>
+                <br/><br/>
+                <table width="100%">
+                    <tr style="float:left">
+                        <td >
+                         <apex:commandLink value="First" action="{!goFirst}" styleClass="btn" rendered="{!canGoBack}">
+                             <apex:param name="productSort" value="Description" />
+                            </apex:commandLink>
+                        <apex:outputText style="color:#ccc;" value="First" styleClass="btn" rendered="{!NOT(canGoBack)}">
+                        </apex:outputText>
+                        <apex:commandLink value="<< Previous" action="{!goPrevious}" styleClass="btn" rendered="{!canGoBack}">
+                            <apex:param name="productSort" value="Description" />
+                            </apex:commandLink>
+                        <apex:outputText style="color:#ccc;" value="<< Previous" styleClass="btn" rendered="{!NOT(canGoBack)}">
+                        </apex:outputText>
+                          
+                        <apex:commandLink value="Next >>" action="{!goNext}" styleClass="btn"  rendered="{!canGoNext}">
+                            <apex:param name="productSort" value="Description" />
+                            </apex:commandLink>
+                        <apex:outputText style="color:#ccc;" value="Next >>" styleClass="btn"  rendered="{!NOT(canGoNext)}">
+                        </apex:outputText>
+                            <apex:commandLink value="Last" action="{!goLast}" styleClass="btn"  rendered="{!canGoNext}">
+                                <apex:param name="productSort" value="Description" />
+                            </apex:commandLink>
+                        <apex:outputText style="color:#ccc;" value="Last" styleClass="btn"  rendered="{!NOT(canGoNext)}">
+                        </apex:outputText>
+                    </td>
+                        <td>
+                            {!OffsetSize+1}-{! CEILING(totalRecord/10) } of {! CEILING(totalRecord/10) }
+                        
+                        </td>
+                    </tr>
+                </table>         
+            </apex:pageBlock>
+        </apex:form>
+        <br/><br/>
+<!--------------------Cart Item----------------------->
+        <apex:form rendered="{!showcart}" id="cartid" >
+            <apex:pageBlock title="Cart Items">
+                <apex:stylesheet value="{!URLFOR($Resource.FontAwesome,'/fontawesome-free-5.13.0-web/css/all.css')}"/>
+                <apex:outputText >&nbsp;&nbsp;  <span style="color:red;">{!showerrorMsg}</span></apex:outputText>
+                <apex:pageBlockTable value="{!cartproducts}" var="cartproduct" >          
+                    <apex:column value="{!cartproduct.productOfCart.name}"/>
+                    <apex:column value="{!cartproduct.productOfCart.productcode}"/>
+                    <apex:column value="{!cartproduct.productOfCart.Price_Per_Unit__c}" headerValue="Price Per Unit" />
+                    <apex:column headerValue="Quantity">
+                       <apex:inputText value="{!cartproduct.quantity}"  >
+                  			<apex:actionSupport event="onkeyup" action="{!verifyCart}" />
+                  	  </apex:inputText>
+               		</apex:column>
+                 
+                    <apex:column >
+                        <apex:commandLink styleClass="fas fa-trash" style="color:gray; font-size:30px;" action="{!Remove}" rerender="productDetail,cartid">
+                            <apex:param value="{!cartproduct.productOfcart.id}" assignTo="{!removeProductFromCart}" name="removeProductFromCart"/>
+                        </apex:commandLink>
+                    </apex:column>
+                </apex:pageBlockTable>
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton value="checkout" action="{!checkout}"  />
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+        </apex:form>
+<!-----------------------------Invoice------------------------------->       
+        <apex:form rendered="{!showinvoice}">
+            <apex:pageBlock title="Invoice">
+                    <div>
+                        <apex:outputText value="{0,date,dd /MMMMM /yyyy }">
+                            Order Date: <apex:param value="{!NOW()}" />
+                        </apex:outputText>
+                    </div>
+                <br/>
+                <apex:pageBlockTable value="{!listOfInvoiceproduct}" var="invoiceproduct" >           
+                    <apex:column value="{!invoiceproduct.productOfInvoice.name}" />
+                    <apex:column value="{!invoiceproduct.productOfInvoice.productcode}"/>
+                    <apex:column headerValue="Price Per Unit" value="{!invoiceproduct.productOfInvoice.Price_Per_Unit__c}"/>
+                    <apex:column headerValue="Quantity" value="{!invoiceproduct.quantity}"/>
+                    <apex:column headerValue="Total Cost" value="{!invoiceproduct.totalCost}"/>
+                </apex:pageBlockTable>
+                <br/>
+                <div style="float:right">
+                    <apex:outputText >Total Payable Amount : ${!total}</apex:outputText>
+                </div>
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton value="Place Order" action="{!placeOrder}" />
+                    <apex:commandButton value="cancel" action="{!cancelOrder}" />
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+        </apex:form>
+</apex:page>
