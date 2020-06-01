@@ -1,0 +1,45 @@
+<apex:page >
+    <h1>
+        Do you want to delete these records
+    </h1>
+    <body>
+        <form style="margin: 20px;" id="Confirmation">
+            <input type="button" onclick = "deleteRecords()" value="Confirm" />
+            <input type="button" onclick = "cancel()" value="cancel" />
+        </form>
+    </body>
+    <script src="/soap/ajax/45.0/connection.js"></script>
+    <script>
+        function deleteRecords()
+    {
+        event.preventDefault();
+        try{
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            var records = urlParams.getAll('Ids');
+            var ids = records[0].split(",");
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            delResult = sforce.connection.deleteIds(ids);
+
+            if (delResult[0].getBoolean("success"))
+            {
+                alert('The Records were Deleted Successfully.'); 
+                window.history.back();
+            }
+            else
+                alert(
+                    'The Records Could Not be Deleted. Error Message: ' + 
+                    delResult[0].errors.message
+                );
+        }
+        catch(error)
+        {
+            alert(error);
+        }
+    }
+    function cancil()
+    {
+        window.history.back();
+    }
+    </script>
+</apex:page>
