@@ -1,0 +1,15 @@
+<apex:page controller="queryController">
+    <apex:form > 
+        <apex:pageMessages />
+        <apex:pageBlock title="{!$Label.QueryResults}">
+            <apex:pageBlockSection >
+                <apex:inputText html-placeholder="your query" style="width:500px; height:20px" value="{!inputQuery}" />
+                <apex:commandButton value="Execute Query" action="{!executeQuery}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+          <apex:pageBlock id="queryResult" rendered="{!showQueryOutput}">
+            <c:QueryComponent inputValue="{!inputQuery}" />
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
