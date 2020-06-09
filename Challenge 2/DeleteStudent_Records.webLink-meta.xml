@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DeleteStudent_Records</fullName>
+    <availability>online</availability>
+    <displayType>massActionButton</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>DeleteStudent Records</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <requireRowSelection>true</requireRowSelection>
+    <url>var strFeatures = &quot;dialogWidth:&quot; + 1100 + &quot;px;&quot; + &quot;dialogHeight:&quot; + 650 + &quot;px;&quot; +
+&quot;status:yes;scroll:yes;&quot;;
+{!REQUIRESCRIPT(&apos;/soap/ajax/31.0/connection.js&apos;)}
+var recIds = {!GETRECORDIDS($ObjectType.Student__c)};
+
+
+var dialogResults = window.open(&quot;/apex/DeleteStudentRecord?Ids=&quot; + recIds,&quot;MyPage&quot;, strFeatures);</url>
+</WebLink>
