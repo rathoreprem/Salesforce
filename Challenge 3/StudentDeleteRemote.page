@@ -1,0 +1,47 @@
+<apex:page controller="StudentDeleteRemote">
+    <script type="text/javascript">
+    function deleteStudents() {
+        try{
+            const queryString = window.location.search;
+            alert(queryString);
+            const urlParams = new URLSearchParams(queryString);
+            var records = urlParams.getAll('id');
+            alert(records);
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentDeleteRemote.deleteStudent}',
+                records, 
+                function(result, event){
+                    if (event.status) {
+                        if(result)
+                        {
+                            alert('Students deleted successfully');
+                            window.history.back();
+                        }
+                        else
+                        {
+                            alert('Failed to delete Student');
+                            window.history.back();
+                        }
+                    } 
+                }, 
+                {escape: true}
+            );
+        }
+        catch(error)
+        {
+            alert(error);
+        }
+    }
+    function cancel()
+    {
+        window.history.back();
+    }
+    </script>
+    
+    <h1>
+        Do you Want to Delete These Students
+    </h1>
+    <button onclick="deleteStudents()">Confirm</button>
+    <button onclick="cancel()">Cancel</button>
+    <div id="responseErrors"></div>
+</apex:page>
