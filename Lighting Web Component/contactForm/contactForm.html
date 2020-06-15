@@ -1,0 +1,34 @@
+<template>
+    <!--contact crated form View -->
+    <lightning-card if:false={contactView}>
+        <div class="slds-p-bottom_large slds-p-left_large" style="width:500px">
+            <lightning-record-form 
+                object-api-name={contactObject} 
+                fields={myFields} 
+                onsuccess={handelContactCreated}
+                onerror={handelError}
+            >
+            </lightning-record-form>
+        </div>
+    </lightning-card>
+
+    <!--view of contact created-->
+    <lightning-card if:true={contactView}>
+        <div class="slds-p-bottom_large slds-p-left_large" style="width:500px">
+            <lightning-record-view-form 
+                record-id={contactId}
+                object-api-name={contactObject}>
+                <lightning-output-field field-name="AccountId" >
+                </lightning-output-field>
+                <lightning-output-field field-name="LastName">
+                </lightning-output-field>
+                <lightning-output-field field-name="FirstName">
+                </lightning-output-field>
+                <lightning-output-field field-name="Email">
+                </lightning-output-field>
+                <lightning-output-field field-name="Phone">
+                </lightning-output-field>
+            </lightning-record-view-form>
+        </div>
+    </lightning-card>
+</template>
