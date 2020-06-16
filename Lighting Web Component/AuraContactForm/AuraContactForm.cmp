@@ -1,0 +1,69 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="newContact" type="Contact"/>
+    <aura:attribute name="recordId" type="Contact"/>
+    <aura:attribute name="showForm" type="boolean" default="true" />
+    <aura:attribute name="fields" type="String[]" default="['FirstName','LastName','AccountId','Email']" />
+    
+    <!-- PAGE HEADER -->
+    <lightning:layout class="slds-page-header slds-page-header--object-home">
+        <lightning:layoutItem>
+            <lightning:icon iconName="standard:scan_card" alternativeText="My Contacts"/>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small">
+            <div class="page-section page-header">
+                <h1 class="slds-text-heading--label">Contacts</h1>
+                <h2 class="slds-text-heading--medium">My Contacts</h2>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <!-- / PAGE HEADER -->
+    
+    <!-- NEW Contact FORM -->
+    <lightning:layout>
+        <lightning:layoutItem padding="around-small" size="6">
+            
+            <!-- CREATE NEW Contact -->
+            <div aria-labelledby="newcontactform">
+                <!-- BOXED AREA -->
+                <fieldset class="slds-box slds-theme--default slds-container--small">
+                    <legend id="newcontactform" class="slds-text-heading--small 
+                                                       slds-p-vertical--medium">
+                        Add Contact
+                    </legend>
+                    
+                    <!-- CREATE NEW Contact FORM -->
+                    <form class="slds-form--stacked"> 
+                        <div class="slds-p-around_medium">
+                            <aura:if isTrue="{!v.showForm}">
+                                <lightning:recordEditForm objectApiName="Contact"
+                                                          onsuccess="{!c.handleOnSuccess}"
+                                                          onerror="{!c.handleOnError}"
+                                                          >
+                                    <lightning:messages />
+                                    <label for="accountLabel">Account</label>
+                                    <lightning:inputField variant="label-hidden" fieldName="AccountId" />
+                                    <lightning:inputField fieldName="FirstName" />
+                                    <lightning:inputField fieldName="LastName" />
+                                    <lightning:inputField fieldName="Email" />
+                                    <lightning:inputField fieldName="Phone" />
+                                    <lightning:inputField fieldName="Fax" />
+                                    <lightning:button type="submit" name="Submit" label="Create Contact" class="slds-m-top_medium"/>
+                                </lightning:recordEditForm>
+                                <aura:set attribute="else">
+                                    <lightning:recordForm
+                                                          recordId="{!v.recordId}"
+                                                          objectApiName="Contact"
+                                                          fields="{!v.fields}"
+                                                          layoutType="Compact"
+                                                          columns="2"
+                                                          mode="readonly" />
+                                </aura:set>
+                            </aura:if>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>
