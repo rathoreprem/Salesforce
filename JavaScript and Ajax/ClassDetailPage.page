@@ -1,0 +1,38 @@
+<apex:page standardController="Class__c">
+   <h1>
+       Enter new student to Class {!Class__c.Name}
+   </h1>
+   <form style="margin: 20px;" id="addStudentForm">
+       <div style="margin: 10px 0;">
+           <label for="studentName">Student Name</label>
+           <input type="text" id="studentName" required="true" placeholder="Enter Student Name" />
+       </div>
+       <input type="submit" value="Submit" onclick="saveTest()" />
+   </form>
+   <script src="/soap/ajax/45.0/connection.js"></script>
+   <script>
+       function saveTest()
+   {
+       try{
+           sforce.connection.sessionId = "{!$Api.Session_ID}";
+           var testStudent = new sforce.SObject("Student__c");
+           var studentName = document.getElementById("studentName").value;
+           testStudent.Name = studentName.split(" ")[0];
+           testStudent.LastName__c = studentName.split(" ")[1];
+           testStudent.Class__c = "{!Class__c.Id}";
+           var result = sforce.connection.create([testStudent]);
+           if (result[0].getBoolean("success")) {
+               alert("new Student created Successfully");
+               window.close();
+           } else {
+               alert("failed to create Student " + result[0]);
+           }
+       }
+       catch(error)
+       {
+           alert(error);
+       }
+       
+   }
+   </script>
+</apex:page>
