@@ -1,0 +1,58 @@
+public class TestApproval {
+    void submitAndProcessApprovalRequest() {
+Step 1: Insert an account
+        Account a = new Account(Name='Test',annualRevenue=100.0);
+        insert a;
+           
+        User user1 = [SELECT Id 
+		      FROM User 
+		      WHERE Alias='SomeStandardUser'];
+            
+Step 2: Create an approval request for the account
+        Approval.ProcessSubmitRequest req1 = new Approval.ProcessSubmitRequest();
+        req1.setComments('Submitting request for approval.');
+        req1.setObjectId(a.id);
+        
+Step 3: Submit on behalf of a specific submitter
+        req1.setSubmitterId(user1.Id); 
+        
+Step 4: Submit the record to specific process and skip the criteria evaluation
+        req1.setProcessDefinitionNameOrId('PTO_Request_Process');
+        req1.setSkipEntryCriteria(true);
+        
+Step 5: Submit the approval request for the account
+        Approval.ProcessResult result = Approval.process(req1);
+        
+Step 6: Verify the result
+        System.assert(result.isSuccess());
+        
+        System.assertEquals(
+            'Pending', result.getInstanceStatus(), 
+            'Instance Status'+result.getInstanceStatus());
+        
+Step 7: (i) Approve the submitted request
+        (ii) First, get the ID of the newly created item
+
+        List<Id> newWorkItemIds = result.getNewWorkitemIds();
+        
+Step 8: Instantiate the new ProcessWorkitemRequest object and populate it
+        Approval.ProcessWorkitemRequest req2 = 
+            new Approval.ProcessWorkitemRequest();
+        req2.setComments('Approving request.');
+        req2.setAction('Approve');
+        req2.setNextApproverIds(new Id[] {UserInfo.getUserId()});
+        
+Step 9: Use the ID from the newly created item to specify the item to be worked
+        req2.setWorkitemId(newWorkItemIds.get(0));
+        
+Step 10: Submit the request for approval
+         Approval.ProcessResult result2 =  Approval.process(req2);
+
+Step 11: Verify the results
+         System.assert(result2.isSuccess(), 'Result Status:'+result2.isSuccess());
+        
+         System.assertEquals(
+             'Approved', result2.getInstanceStatus(), 
+             'Instance Status'+result2.getInstanceStatus());
+    }
+}
