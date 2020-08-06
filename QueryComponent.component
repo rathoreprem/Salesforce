@@ -1,0 +1,25 @@
+<apex:component controller="QueryComponentController">
+    <apex:attribute name="inputValue" description="The query to execute." type="String" required="required" assignTo="{!inputQuery}"/>
+    <apex:pageBlock title="{$Label.QueryResults}" id="table">
+        <apex:pageMessages />
+        <apex:pageBlockSection > 
+            <apex:pageBlockTable value="{!QueryRecords}" var="data" >
+                <apex:repeat value="{!fieldList}" var="field">
+                    <apex:column >
+                        <apex:facet name="header">  
+                            <apex:commandLink action="{!sort}" value="{!field}" reRender="table">
+                                <apex:param value="{!field}" name="sortBy" assignTo="{!sortBy}" />
+                            </apex:commandLink>
+                        </apex:facet>
+                        <apex:outputText value="{!data[field]}"></apex:outputText>
+                    </apex:column>
+                </apex:repeat> 
+            </apex:pageBlockTable>
+        </apex:pageBlockSection>
+        <apex:outputText value=" Page: {!setController.PageNumber} of {! CEILING(setController.ResultSize / setController.PageSize) }"/>
+        <apex:commandButton value="First" action="{!setController.First}"  reRender="table" />
+        <apex:commandButton value="Previous" action="{!setController.Previous}"  reRender="table" />
+        <apex:commandButton value="Next" action="{!setController.Next}"  reRender="table" />
+        <apex:commandButton value="Last" action="{!setController.Last}"   reRender="table"/>
+    </apex:pageBlock>
+</apex:component>
