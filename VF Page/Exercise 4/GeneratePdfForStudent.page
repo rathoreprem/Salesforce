@@ -1,0 +1,6 @@
+<apex:page standardController="Student__c" extensions="GeneratePdfForStudent" action="{!saveAttachment}">
+   <apex:iframe id="pdfFrame" src="/apex/StudentPDF?id={!$CurrentPage.parameters.id}" />
+	<script>
+    	document.getElementById('pdfFrame').height = window.innerHeight;
+   </script>
+</apex:page>

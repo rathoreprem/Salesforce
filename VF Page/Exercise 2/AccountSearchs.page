@@ -1,0 +1,32 @@
+<apex:page controller="AccountSearch">
+   <apex:form >
+       <apex:pageBlock title="Accounts Search" id="searchResults">
+           <apex:pageBlockSection >
+               <apex:inputText value="{!pageSize}" label="Number of Accounts to show" />
+               <apex:inputText value="{!billingCity}" label="Billing City" />
+               <apex:inputText value="{!billingState}" label="Billing State" />
+               <apex:inputText value="{!billingCountry}" label="Billing Country " />
+           </apex:pageBlockSection>
+           <apex:pageBlockButtons >
+               <apex:commandButton value="Search" reRender="searchResults" action="{!search}" />
+           </apex:pageBlockButtons>
+           <apex:pageBlockTable value="{!accounts}" var="account">
+               <apex:column value="{!account.Name}"/>
+               <apex:column value="{!account.BillingCity}"/>
+               <apex:column value="{!account.BillingState}"/>
+               <apex:column value="{!account.BillingCountry}"/>
+           </apex:pageBlockTable>
+           <apex:commandLink action="{!setController.first}" value="First" reRender="searchResults" rendered="{!setController.hasPrevious}" />
+           <apex:outputText style="color: #ccc;" value="First" rendered="{! NOT(setController.hasPrevious) }"/>
+           &nbsp;&nbsp;
+           <apex:commandLink action="{!setController.previous}" value="<< Previous" reRender="searchResults" rendered="{!setController.hasPrevious}" />
+           <apex:outputText style="color: #ccc;" value="<< Previous" rendered="{! NOT(setController.hasPrevious) }"/>
+           &nbsp;&nbsp;
+           <apex:commandLink action="{!setController.next}" value="Next >>" reRender="searchResults" rendered="{!setController.hasNext}" />
+           <apex:outputText style="color: #ccc;" value="Next >>" rendered="{! NOT(setController.hasNext) }"/>
+           &nbsp;&nbsp;
+           <apex:commandLink action="{!setController.last}" value="Last" reRender="searchResults" rendered="{!setController.hasNext}" />
+           <apex:outputText style="color: #ccc;" value="Last" rendered="{! NOT(setController.hasNext) }"/>
+       </apex:pageBlock>
+   </apex:form>
+</apex:page>
